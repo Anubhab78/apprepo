@@ -1,33 +1,52 @@
-name: closet-server startup
-on: 
-  push:
-    branches:
-      - demo
-jobs:
+name: Super-Linter
 
-  build:
-    name: Build
+on: push
+
+jobs:
+  super-lint:
+    name: Lint code base
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: copy file via ssh
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
-        port: ${{ secrets.PORT }}
-        source: "trigger.sh"
-        target: "trigger"
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run Super-Linter
+        uses: github/super-linter@v3
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+# name: closet-server startup
+# on: 
+#   push:
+#     branches:
+#       - demo
+# jobs:
+
+#   build:
+#     name: Build
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@master
+#     - name: copy file via ssh
+#       uses: appleboy/scp-action@master
+#       with:
+#         host: ${{ secrets.HOST }}
+#         username: ${{ secrets.USERNAME }}
+#         key: ${{ secrets.KEY }}
+#         port: ${{ secrets.PORT }}
+#         source: "trigger.sh"
+#         target: "trigger"
         
-    - name: executing remote ssh commands
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }} 
-        key: ${{ secrets.KEY }}
-        port: ${{ secrets.PORT }}
-        script: |
-          export BRANCH=demo
-          chmod +x $HOME/trigger/trigger.sh
-          /bin/bash $HOME/trigger/trigger.sh
+#     - name: executing remote ssh commands
+#       uses: appleboy/ssh-action@master
+#       with:
+#         host: ${{ secrets.HOST }}
+#         username: ${{ secrets.USERNAME }} 
+#         key: ${{ secrets.KEY }}
+#         port: ${{ secrets.PORT }}
+#         script: |
+#           export BRANCH=demo
+#           chmod +x $HOME/trigger/trigger.sh
+#           /bin/bash $HOME/trigger/trigger.sh
